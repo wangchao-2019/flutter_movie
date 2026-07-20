@@ -82,3 +82,6 @@ build_log.txt
 create_log.txt
 flutter_version.txt
 test.txt
+
+# CodeBuddy agent data
+.codebuddy/
