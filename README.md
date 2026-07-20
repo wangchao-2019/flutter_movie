@@ -1,6 +1,6 @@
 # flutter_movie
 
-A new Flutter project.
+一个极简观看电影的安卓app
 
 ## Getting Started
 
