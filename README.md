@@ -1,6 +1,6 @@
 # flutter_movie
 
-一个极简观看电影的安卓app
+一个ui风格极简的观看电影的安卓app
 
 ## Getting Started
 
