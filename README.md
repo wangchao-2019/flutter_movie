@@ -1,6 +1,6 @@
 # flutter_movie
 
-一个ui风格极简的观看电影的安卓app
+一个ui风格极简的观看电影的安卓app，包含为你推荐，最近更新，电影搜索，个人收藏，在线播放
 
 ## Getting Started
 
