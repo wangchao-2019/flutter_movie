@@ -9,4 +9,5 @@ class AppRoutes {
   static const profile = '/profile';
   static const login = '/login';
   static const settings = '/settings';
+  static const message = '/message';
 }

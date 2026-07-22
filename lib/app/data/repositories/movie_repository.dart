@@ -1,3 +1,4 @@
+import '../models/message_model.dart';
 import '../models/movie_model.dart';
 import '../models/paged_result_model.dart';
 import '../providers/api_provider.dart';
@@ -46,4 +47,16 @@ class MovieRepository {
   /// 添加观看记录（POST /api/watch-history，需 token）。
   Future<void> addWatchHistory({required int movieId, String? token}) =>
       _apiProvider.addWatchHistory(movieId: movieId, token: token);
+
+  /// 提交留言（POST /api/messages，需 token）。
+  Future<void> submitMessage(String content, {String? token}) =>
+      _apiProvider.submitMessage(content, token: token);
+
+  /// 获取留言列表（GET /api/messages，需 token）。
+  Future<List<MessageModel>> getMessages({
+    int page = 0,
+    int size = 20,
+    String? token,
+  }) =>
+      _apiProvider.fetchMessages(page: page, size: size, token: token);
 }

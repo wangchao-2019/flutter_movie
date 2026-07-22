@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../data/models/movie_model.dart';
+import '../data/providers/api_provider.dart';
 import '../data/repositories/movie_repository.dart';
 import '../modules/discover/discover_binding.dart';
 import '../modules/discover/discover_view.dart';
@@ -16,6 +17,8 @@ import '../modules/profile/profile_view.dart';
 import '../modules/auth/auth_controller.dart';
 import '../modules/auth/login_binding.dart';
 import '../modules/auth/login_view.dart';
+import '../modules/message/message_controller.dart';
+import '../modules/message/message_view.dart';
 import '../modules/settings/settings_binding.dart';
 import '../modules/settings/settings_view.dart';
 import 'app_routes.dart';
@@ -81,10 +84,26 @@ class AppPages {
       page: () => const SettingsView(),
       binding: SettingsBinding(),
     ),
+    GetPage(
+      name: AppRoutes.message,
+      page: () => const MessageView(),
+      binding: BindingsBuilder(() => Get.put<MessageController>(
+        MessageController(Get.find<MovieRepository>()),
+      )),
+    ),
   ];
 
   /// 应用启动时注册全局单例依赖。
   static void initDependencies() {
     Get.put<AuthController>(AuthController());
+    if (!Get.isRegistered<ApiProvider>()) {
+      Get.put<ApiProvider>(ApiProvider(), permanent: true);
+    }
+    if (!Get.isRegistered<MovieRepository>()) {
+      Get.put<MovieRepository>(
+        MovieRepository(Get.find<ApiProvider>()),
+        permanent: true,
+      );
+    }
   }
 }

@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
+import '../models/message_model.dart';
 import '../models/movie_model.dart';
 import '../models/paged_result_model.dart';
 import '../../config/app_config.dart';
@@ -328,6 +330,72 @@ class ApiProvider {
       final Map<String, dynamic> body =
           jsonDecode(response.body) as Map<String, dynamic>;
       throw Exception(body['error'] ?? body['message'] ?? '添加观看历史失败');
+    }
+  }
+
+  /// 提交留言（POST /api/messages）。
+  ///
+  /// [content] 留言内容（字段名 `content`）；[token] 为登录后拿到的 token，
+  /// 会拼成 `Bearer <token>` 放入 Authorization 请求头。
+  Future<void> submitMessage(String content, {String? token}) async {
+    final Map<String, String> headers = <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    if (token != null && token.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $token';
+    }
+
+    final Uri uri = Uri.parse('$_baseUrl/api/messages');
+
+    final response = await http.post(
+      uri,
+      headers: headers,
+      body: jsonEncode(<String, dynamic>{'content': content}),
+    );
+
+
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      final Map<String, dynamic> body =
+          jsonDecode(response.body) as Map<String, dynamic>;
+      throw Exception(body['error'] ?? body['message'] ?? '留言提交失败');
+    }
+  }
+
+  /// 获取留言列表（GET /api/messages）。
+  ///
+  /// [page] 页码，从 0 开始；[size] 每页条数；[token] 为登录后拿到的 token，
+  /// 会拼成 `Bearer <token>` 放入 Authorization 请求头。
+  Future<List<MessageModel>> fetchMessages({
+    int page = 0,
+    int size = 20,
+    String? token,
+  }) async {
+    final Uri uri = Uri.parse('$_baseUrl/api/messages').replace(
+      queryParameters: <String, String>{
+        'page': page.toString(),
+        'size': size.toString(),
+      },
+    );
+    final Map<String, String> headers = <String, String>{};
+    if (token != null && token.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $token';
+    }
+
+
+    final response = await http.get(uri, headers: headers);
+
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data =
+          jsonDecode(response.body) as Map<String, dynamic>;
+      final List<dynamic> content = data['content'] as List<dynamic>;
+      return content
+          .map((dynamic e) => MessageModel.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } else {
+      final Map<String, dynamic> body =
+          jsonDecode(response.body) as Map<String, dynamic>;
+      throw Exception(body['error'] ?? body['message'] ?? '加载留言失败');
     }
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../modules/auth/auth_controller.dart';
+import '../../routes/app_routes.dart';
 import 'settings_controller.dart';
 
 const Color _accentOrange = Color(0xFFFF7A2E);
@@ -39,7 +41,16 @@ class SettingsView extends GetView<SettingsController> {
                     _buildLogoutTile(),
                     const SizedBox(height: 24),
                     _buildSectionTitle('关于'),
-                    _buildInfoTile('版本', '1.0.0'),
+                    _buildInfoTile(
+                      '给我留言',
+                      onTap: () {
+                        if (!AuthController.to.isLoggedIn.value) {
+                          Get.toNamed(AppRoutes.login);
+                          return;
+                        }
+                        Get.toNamed(AppRoutes.message);
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -116,7 +127,11 @@ class SettingsView extends GetView<SettingsController> {
     );
   }
 
-  Widget _buildInfoTile(String title, String value) {
+  Widget _buildInfoTile(
+    String title, {
+    String? value,
+    VoidCallback? onTap,
+  }) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.08),
@@ -128,10 +143,17 @@ class SettingsView extends GetView<SettingsController> {
           title,
           style: const TextStyle(color: Colors.white),
         ),
-        trailing: Text(
-          value,
-          style: TextStyle(color: Colors.white.withValues(alpha: 0.55)),
-        ),
+        trailing: onTap != null
+            ? const Icon(
+                Icons.arrow_forward_ios,
+                color: Colors.white38,
+                size: 16,
+              )
+            : Text(
+                value ?? '',
+                style: TextStyle(color: Colors.white.withValues(alpha: 0.55)),
+              ),
+        onTap: onTap,
       ),
     );
   }

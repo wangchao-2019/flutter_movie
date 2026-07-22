@@ -23,12 +23,16 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // 登录态以 token 是否存在为准
-    isLoggedIn.value = token.value.isNotEmpty;
     username.value = _box.read(_keyUsername) ?? '';
     avatarUrl.value = _box.read(_keyAvatarUrl) ?? '';
     token.value = _box.read(_keyToken) ?? '';
+    // 登录态以 token 是否存在为准（需在读取 token 之后判断）
+    isLoggedIn.value = token.value.isNotEmpty;
   }
+
+  /// 当前有效 token：优先用内存值，若为空再回退到持久化存储。
+  String get tokenValue =>
+      token.value.isNotEmpty ? token.value : (_box.read(_keyToken) ?? '');
 
   Map<String, String> get _registeredUsers =>
       Map<String, String>.from(_box.read(_keyRegisteredUsers) ?? <String, String>{});
