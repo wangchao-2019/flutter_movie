@@ -9,8 +9,6 @@ class MovieRepository {
 
   MovieRepository(this._apiProvider);
 
-  Future<List<Movie>> getMovies() => _apiProvider.fetchMovies();
-
   Future<PagedMovies> getMoviesByPage({
     required int page,
     int size = 10,
